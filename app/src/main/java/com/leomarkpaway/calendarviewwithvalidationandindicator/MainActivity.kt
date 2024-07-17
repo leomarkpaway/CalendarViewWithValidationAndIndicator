@@ -7,22 +7,19 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.leomarkpaway.calendarviewwithvalidationandindicator.databinding.ActivityMainBinding
-import java.text.SimpleDateFormat
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
     private val binding: ActivityMainBinding by lazy { DataBindingUtil.setContentView(this, R.layout.activity_main) }
     private val calendar: Calendar by lazy { Calendar.getInstance() }
     private lateinit var calendarView: CalendarView
-    @RequiresApi(Build.VERSION_CODES.O)
-    private val dateTimeFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy")
-    private val dateStringPattern = "MM/d/yyyy"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +32,7 @@ class MainActivity : AppCompatActivity() {
         cvDate.setOnDateChangeListener { _, year, month, dayOfMonth ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 calendar.set(year, month, dayOfMonth)
-                val dateString = calendar.timeInMillis.convertMillis(calendar, dateStringPattern)
-                val date = dateString.dateStringToLocalDate(dateTimeFormatter)
+                val date = calendar.timeInMillis.convertMillisToLocalDate()
                 tvDateIndicator.text = getDateIndicator(date)
             }
         }
@@ -83,15 +79,9 @@ class MainActivity : AppCompatActivity() {
         return (0..6).map { startOfWeek.plusDays(it.toLong()) }
     }
 
-    fun Long.convertMillis(calendar: Calendar, pattern: String): String {
-        calendar.timeInMillis = this
-        val sdf = SimpleDateFormat(pattern, Locale.getDefault())
-        return sdf.format(calendar.time)
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    fun String.dateStringToLocalDate(format: DateTimeFormatter): LocalDate {
-        return LocalDate.parse(this, format)
-    }
+    fun Long.convertMillisToLocalDate() = Instant.ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
 
 }
