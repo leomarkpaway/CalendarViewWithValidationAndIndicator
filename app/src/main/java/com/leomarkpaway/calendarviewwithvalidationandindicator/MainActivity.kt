@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             date.isAfter(nextWeek.minusDays(1)) && date.isBefore(nextMonth.plusMonths(remainingMonths)) -> {
                 "${date.format(dateFormat)}, ${ChronoUnit.DAYS.between(today, date)} days left"
             }
-            date.year != today.year -> { "$${date.format(dateFormat)}, ${date.year}" }
+            date.year != today.year -> { "${date.format(dateFormat)}, ${date.year}" }
             else -> "Invalid"
         }
     }
