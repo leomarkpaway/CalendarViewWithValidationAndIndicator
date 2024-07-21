@@ -59,8 +59,8 @@ class MainActivity : AppCompatActivity() {
             date.isEqual(today) -> "Today"
             date.isEqual(today.plusDays(1)) -> "Tomorrow"
             date.isEqual(today.plusDays(2)) && !date.isEqual(currentWeek[5]) && !date.isEqual(currentWeek[6]) -> "2 days later"
-            date.dayOfWeek == DayOfWeek.SATURDAY && date.isEqual(currentWeek[5]) -> "Saturday"
-            date.dayOfWeek == DayOfWeek.SUNDAY && date.isEqual(currentWeek[6]) -> "Sunday"
+            date.dayOfWeek == DayOfWeek.SATURDAY && date.isEqual(currentWeek[5]) && today.isBefore(date) -> "Saturday"
+            date.dayOfWeek == DayOfWeek.SUNDAY && date.isEqual(currentWeek[6]) && today.isBefore(date) -> "Sunday"
             date.isBefore(nextWeek.plusWeeks(1)) && date.isAfter(today) -> {
                 "Next ${date.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }}"
             }
